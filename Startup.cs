@@ -26,14 +26,11 @@ namespace aspnetcore2_clientcertauth
             services.AddAuthentication(options =>
             {
                 // the scheme name has to match the value we're going to use in AuthenticationBuilder.AddScheme(...)
-                options.DefaultAuthenticateScheme = "Custom Scheme";
-                options.DefaultChallengeScheme = "Custom Scheme";
+                options.DefaultAuthenticateScheme = "Client Certificate";
+                options.DefaultChallengeScheme = "Client Certificate";
             })
-            .AddCustomAuthentication(
-                "Custom Scheme",
-                "Custom Scheme",
-                o => { });
-
+            .AddClientCertificateAuthentication(options => {});
+            
             services.AddMvc();
         }
 

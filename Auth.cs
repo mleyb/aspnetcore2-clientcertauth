@@ -8,14 +8,14 @@ using Microsoft.Extensions.Options;
 
 namespace aspnetcore2_clientcertauth
 {
-    public class CustomAuthenticationOptions : AuthenticationSchemeOptions  
+    public class ClientCertificateAuthenticationOptions : AuthenticationSchemeOptions  
     {
         // Authentication options properties
     }
 
-    public class CustomAuthenticationHandler : AuthenticationHandler<CustomAuthenticationOptions>  
+    public class ClientCertificateAuthenticationHandler : AuthenticationHandler<ClientCertificateAuthenticationOptions>  
     {
-        public CustomAuthenticationHandler(IOptionsMonitor<CustomAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
+        public ClientCertificateAuthenticationHandler(IOptionsMonitor<ClientCertificateAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
             : base(options, logger, encoder, clock) { }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -31,9 +31,9 @@ namespace aspnetcore2_clientcertauth
 
     public static class CustomAuthenticationExtensions  
     {
-        public static AuthenticationBuilder AddCustomAuthentication(this AuthenticationBuilder builder, string authenticationScheme, string displayName, Action<CustomAuthenticationOptions> configureOptions)
+        public static AuthenticationBuilder AddClientCertificateAuthentication(this AuthenticationBuilder builder, Action<ClientCertificateAuthenticationOptions> configureOptions)
         {
-            return builder.AddScheme<CustomAuthenticationOptions, CustomAuthenticationHandler>(authenticationScheme, displayName, configureOptions);
+            return builder.AddScheme<ClientCertificateAuthenticationOptions, ClientCertificateAuthenticationHandler>("Client Certificate", "Client Certificate", configureOptions);
         }
     }
 }
