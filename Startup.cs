@@ -29,7 +29,7 @@ namespace aspnetcore2_clientcertauth
                 options.DefaultAuthenticateScheme = "Client Certificate";
                 options.DefaultChallengeScheme = "Client Certificate";
             })
-            .AddClientCertificateAuthentication(options => {});
+            .AddClientCertificateAuthentication(options => options.Thumbprint = "SomeThumbprint");
             
             services.AddMvc();
         }

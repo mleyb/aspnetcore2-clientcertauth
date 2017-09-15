@@ -1,5 +1,6 @@
 using System;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -10,7 +11,7 @@ namespace aspnetcore2_clientcertauth
 {
     public class ClientCertificateAuthenticationOptions : AuthenticationSchemeOptions  
     {
-        // Authentication options properties
+        public string Thumbprint { get; set; }
     }
 
     public class ClientCertificateAuthenticationHandler : AuthenticationHandler<ClientCertificateAuthenticationOptions>  
@@ -18,14 +19,23 @@ namespace aspnetcore2_clientcertauth
         public ClientCertificateAuthenticationHandler(IOptionsMonitor<ClientCertificateAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
             : base(options, logger, encoder, clock) { }
 
-        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
-        {
-                return Task.FromResult(
-                    AuthenticateResult.Success(
-                        new AuthenticationTicket(
-                            new ClaimsPrincipal(),
-                            new AuthenticationProperties(),
-                            this.Scheme.Name)));
+        protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+        {base.
+            X509Certificate2 cert = await Context.Connection.GetClientCertificateAsync();
+
+            if (cert != null && cert.Thumbprint == Options.Thumbprint)
+            {
+                var ticket = new AuthenticationTicket(
+                    new ClaimsPrincipal(),
+                    new AuthenticationProperties(),
+                    Scheme.Name);
+
+                return AuthenticateResult.Success(ticket);
+            }
+            else
+            {
+                return AuthenticateResult.Fail("Client certificate required");
+            }
         }
     }
 
