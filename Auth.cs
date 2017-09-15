@@ -23,10 +23,12 @@ namespace aspnetcore2_clientcertauth
         {
             X509Certificate2 cert = await Context.Connection.GetClientCertificateAsync();
 
-            if (cert != null && cert.Thumbprint == Options.Thumbprint)
+            if (cert != null && cert.Verify() && cert.Thumbprint == Options.Thumbprint)
             {
                 var ticket = new AuthenticationTicket(
-                    new ClaimsPrincipal(),
+                    new ClaimsPrincipal(
+                        new ClaimsIdentity("ClientCertificate")
+                    ),
                     new AuthenticationProperties(),
                     Scheme.Name);
 
@@ -34,7 +36,7 @@ namespace aspnetcore2_clientcertauth
             }
             else
             {
-                return AuthenticateResult.Fail("Client certificate required");
+                return AuthenticateResult.Fail("Access denied");
             }
         }
     }
