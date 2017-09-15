@@ -20,7 +20,7 @@ namespace aspnetcore2_clientcertauth
             : base(options, logger, encoder, clock) { }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
-        {base.
+        {
             X509Certificate2 cert = await Context.Connection.GetClientCertificateAsync();
 
             if (cert != null && cert.Thumbprint == Options.Thumbprint)
